@@ -63,5 +63,4 @@
                m
                (assoc m unique-on row)))
            {})
-          vals
-          vec))))
+          vals))))
