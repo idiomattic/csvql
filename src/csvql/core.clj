@@ -1,4 +1,4 @@
-(ns csvql.read
+(ns csvql.core
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]))
 
