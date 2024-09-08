@@ -1,24 +1,4 @@
-(ns csvql.join
-  (:require [clojure.data.csv :as csv]
-            [clojure.java.io :as io]))
-
-
-(defn read-csv [resource-name]
-  (-> resource-name
-      io/resource
-      slurp
-      csv/read-csv))
-
-(defn read-and-zip-rows
-  "Reads a CSV resource, returning a sequence of rows represented as maps,
-     with the respective headers as keys.
-   When given the option `:key-fn`, applies the function to each header.
-   When not given a `:key-fn`, keywordizes the headers."
-  [resource-name {:keys [key-fn] :or {key-fn keyword}}]
-  (let [ingested-csv (read-csv resource-name)
-        [headers & body] ingested-csv
-        kw-headers (->> headers (map key-fn))]
-    (map #(zipmap kw-headers %) body)))
+(ns csvql.join)
 
 (defn inner-join
   "Performs an inner join on two sequences of maps.
