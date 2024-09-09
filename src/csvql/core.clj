@@ -20,7 +20,8 @@
 (defn zip-rows
   "Given a sequence of rows, including a header row, returns a sequence of maps
      with the respective headers as keys."
-  ([contents] (zip-rows contents {}))
+  ([contents]
+   (zip-rows contents {}))
 
   ([contents parsers]
    (let [[headers & body] contents]

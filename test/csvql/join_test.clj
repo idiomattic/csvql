@@ -43,7 +43,8 @@
               :favorite_color "purple",
               :order_date "2024-03-18",
               :total_amount "75.25"})
-           (join/inner users orders :id :user_id)))))
+           (join/inner users orders {:left-key :id
+                                     :right-key :user_id})))))
 
 (deftest outer-test
   (testing "can perform an outer join on two sequences of maps"
@@ -87,4 +88,5 @@
               :favorite_color "purple",
               :order_date "2024-03-18",
               :total_amount "75.25"})
-            (join/outer users orders :id :user_id)))))
+            (join/outer users orders {:left-key :id
+                                      :right-key :user_id})))))
