@@ -62,4 +62,12 @@
       (is (= expcted-map-seq
              (-> users
                  (csvql/transform-headers keyword)
-                 csvql/zip-rows))))))
+                 csvql/zip-rows)))))
+  (testing "Can apply parsers to values in rows."
+    (let [parsers {:age #(Integer/parseInt %)
+                   :is_active #(Boolean/parseBoolean %)}
+          result (-> users
+                     (csvql/transform-headers keyword)
+                     (csvql/zip-rows parsers))]
+      (is (every? boolean? (map :is_active result)))
+      (is (every? int? (map :age result))))))
