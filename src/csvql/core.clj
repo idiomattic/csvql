@@ -34,7 +34,17 @@
                 (map vector headers row)))
       body))))
 
+(defn read-zip-parse
+  [resource-name-or-path {:keys [key-fn
+                                 parsers]
+                          :or {key-fn identity
+                               parsers {}}}]
+  (-> resource-name-or-path
+      read-csv
+      (transform-headers key-fn)
+      (zip-rows parsers)))
+
 (defn create-lookup
   "Creates a lookup table from a sequence of maps."
-  [rows key-fn value-fn]
+  [rows {:keys [key-fn value-fn]}]
   (into {} (map (juxt key-fn value-fn) rows)))
