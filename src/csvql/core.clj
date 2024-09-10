@@ -33,3 +33,8 @@
                 {}
                 (map vector headers row)))
       body))))
+
+(defn create-lookup
+  "Creates a lookup table from a sequence of maps."
+  [rows key-fn value-fn]
+  (into {} (map (juxt key-fn value-fn) rows)))
