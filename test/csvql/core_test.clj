@@ -11,13 +11,33 @@
     ["9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d" "Diana Lee" "31" "true" "purple"]
     ["3b99e3e0-7598-4bf8-b932-58a356f02307" "Ethan Davis" "39" "false" "orange"]))
 
+(deftest csv-from-string-test
+  (testing "Can read a CSV string representation into a lazy sequence."
+    (is (= '(["a" "b" "c"] ["1" "2" "3"])
+           (csvql/csv-from-string "a,b,c\n1,2,3")))
+    (testing "Applies processing function to the rows when provided."
+      (is (= '({:a 1, :b "2", :c "3"})
+             (csvql/csv-from-string "a,b,c\n1,2,3"
+                                    #(-> %
+                                         (csvql/transform-headers keyword)
+                                         (csvql/zip-rows {:a parse-long}))))))))
+
 (deftest read-csv-test
-  (testing "Can read a CSV file that is bundled as a resource."
-    (is (= users
-           (csvql/read-csv "user_data.csv"))))
-  (testing "Can read a CSV file given a file path."
-    (is (= users
-           (csvql/read-csv "dev-resources/user_data.csv")))))
+  (testing "Returns an unparsed lazy sequence of rows when given one argument."
+    (testing "Can read a CSV file that is bundled as a resource."
+      (is (= users
+             (csvql/read-csv "user_data.csv"))))
+    (testing "Can read a CSV file given a file path."
+      (is (= users
+             (csvql/read-csv "dev-resources/user_data.csv")))))
+  (testing "Can apply a processing function to the rows."
+    (is (= {:id "550e8400-e29b-41d4-a716-446655440000", :name "Alice Smith", :age ,28 :is_active true, :favorite_color "blue"}
+           (csvql/read-csv "dev-resources/user_data.csv"
+                           #(-> %
+                                (csvql/transform-headers keyword)
+                                (csvql/zip-rows {:age parse-long
+                                                 :is_active parse-boolean})
+                                first))))))
 
 (deftest transform-headers-test
   (testing "Can transform headers by applying a function."
@@ -80,16 +100,3 @@
                                        :total_amount parse-double}))]
     (is (= (csvql/create-lookup user-data {:key-fn :name :value-fn :age})
         {"Alice Smith" 28, "Bob Johnson" 35, "Charlie Brown" 42, "Diana Lee" 31, "Ethan Davis" 39}))))
-
-(deftest read-zip-parse-test
-  (let [expected (-> (csvql/read-csv "dev-resources/user_data.csv")
-                     (csvql/transform-headers keyword)
-                     (csvql/zip-rows {:age parse-long
-                                      :is_active parse-boolean
-                                      :total_amount parse-double}))]
-    (is (= expected
-           (csvql/read-zip-parse "dev-resources/user_data.csv"
-                                 {:key-fn keyword
-                                  :parsers {:age parse-long
-                                            :is_active parse-boolean
-                                            :total_amount parse-double}})))))
