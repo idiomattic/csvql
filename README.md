@@ -84,16 +84,18 @@ Add the following dependency to your project.clj:
          '[csvql.join :as join])
 
 (def users
-  (-> (csvql/read-csv "test/fixtures/user_data.csv")
-      (csvql/transform-headers keyword)
-      (csvql/zip-rows {:age parse-long
-                       :is_active parse-boolean})))
+  (csvql/read-zip-parse
+   "test/fixtures/user_data.csv"
+   {:key-fn keyword
+    :parsers {:age parse-long
+              :is_active parse-boolean}}))
 
 (def orders
-  (-> (csvql/read-csv "test/fixtures/order_data.csv")
-      (csvql/transform-headers keyword)
-      (csvql/zip-rows {:is_shipped parse-boolean
-                       :total_amount parse-double})))
+  (csvql/read-zip-parse
+   "test/fixtures/order_data.csv"
+   {:key-fn keyword
+    :parsers {:is_shipped parse-boolean
+              :total_amount parse-double}}))
 
 (join/inner orders users {:left-key :user_id :right-key :id})
 ;; => 
