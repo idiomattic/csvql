@@ -26,6 +26,9 @@ Add the following dependency to your project.clj:
 (require '[csvql.core :as csvql])
 
 (def orders-data (csvql/read-csv "dev-resources/order_data.csv"))
+;; Or read from a string
+(def orders-data (csvql/csv-from-string "a,b,c\n1,2,3"))
+;; => '(["a" "b" "c"] ["1" "2" "3"])
 
 (def orders-data-w-kw-headers (csvql/transform-headers data keyword))
 
@@ -35,10 +38,12 @@ Add the following dependency to your project.clj:
                              :is_shipped parse-boolean}))
 
 ;; Equivalent to
-(def orders (csvql/read-zip-parse "dev-resources/order_data.csv"
-                                  {:key-fn keyword
-                                   :parsers {:total_amount parse-double
-                                             :is_shipped parse-boolean}}))
+(def orders (csvql/read-csv "dev-resources/order_data.csv"
+                            (fn [data]
+                              (-> data
+                                  (csvql/transform-headers keyword)
+                                  (csvql/zip-rows {:total_amount parse-double
+                                                   :is_shipped parse-boolean})))))
 ;; =>
 '({:order_id "ORD-001",
    :user_id "550e8400-e29b-41d4-a716-446655440000",
@@ -84,18 +89,22 @@ Add the following dependency to your project.clj:
          '[csvql.join :as join])
 
 (def users
-  (csvql/read-zip-parse
+  (csvql/read-csv
    "dev-resources/user_data.csv"
-   {:key-fn keyword
-    :parsers {:age parse-long
-              :is_active parse-boolean}}))
+   (fn [data]
+     (-> data
+         (csvql/transform-headers keyword)
+         (csvql/zip-rows {:age parse-double
+                          :is_active parse-boolean})))))
 
 (def orders
-  (csvql/read-zip-parse
+  (csvql/read-csv
    "dev-resources/order_data.csv"
-   {:key-fn keyword
-    :parsers {:is_shipped parse-boolean
-              :total_amount parse-double}}))
+   (fn [data]
+     (-> data
+         (csvql/transform-headers keyword)
+         (csvql/zip-rows {:total_amount parse-double
+                          :is_shipped parse-boolean})))))
 
 (join/inner orders users {:left-key :user_id :right-key :id})
 ;; => 
@@ -117,10 +126,10 @@ Add the following dependency to your project.clj:
 
 ### csvql.core
 
-- `read-csv [resource-name-or-path]`: Reads a CSV file and returns a sequence of rows.
+- `read-csv [resource-name-or-path ?processor]`: Reads a CSV file and returns a sequence of rows, applying the `processor` function if provided.
+- `read-csv [resource-name-or-path ?processor]`: Parses CSV data from a string and returns a sequence of rows, applying the `processor` function if provided.
 - `transform-headers [rows f]`: Transforms the header row by applying the function `f` to each header.
 - `zip-rows [contents parsers]`: Converts rows to a sequence of maps, with optional parsing of values.
-- `read-zip-parse [resource-name-or-path opts]`: Threads resource name/file path through reader and zipper, applying provided opts `key-fn` and `parsers` to the headers and body, respectively.
 - `create-lookup [rows {:keys [key-fn value-fn]}]`: Creates a lookup table from a sequence of maps.
 
 ### csvql.join
