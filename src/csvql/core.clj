@@ -18,7 +18,7 @@
 (defn csv-from-string
   "Parses CSV data from a string."
   ([s]
-   (csv/read-csv (java.io.StringReader. s)))
+   (csv/read-csv (java.io.StringReader. ^String s)))
   ([s processor]
    (processor (csv/read-csv (java.io.StringReader. s)))))
 
