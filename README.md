@@ -126,10 +126,6 @@ Add the following dependency to your project.clj:
 - `inner [left-rows right-rows {:keys [left-key right-key]}]`: Performs an inner join on two sequences of maps.
 - `outer [left-rows right-rows {:keys [left-key right-key]}]`: Performs an outer join on two sequences of maps.
 
-## License
-
-[MIT License](https://opensource.org/licenses/MIT)
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

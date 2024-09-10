@@ -80,3 +80,16 @@
                                        :total_amount parse-double}))]
     (is (= (csvql/create-lookup user-data {:key-fn :name :value-fn :age})
         {"Alice Smith" 28, "Bob Johnson" 35, "Charlie Brown" 42, "Diana Lee" 31, "Ethan Davis" 39}))))
+
+(deftest read-zip-parse-test
+  (let [expected (-> (csvql/read-csv "test/fixtures/user_data.csv")
+                     (csvql/transform-headers keyword)
+                     (csvql/zip-rows {:age parse-long
+                                      :is_active parse-boolean
+                                      :total_amount parse-double}))]
+    (is (= expected
+           (csvql/read-zip-parse "test/fixtures/user_data.csv"
+                                 {:key-fn keyword
+                                  :parsers {:age parse-long
+                                            :is_active parse-boolean
+                                            :total_amount parse-double}})))))
