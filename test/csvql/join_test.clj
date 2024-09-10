@@ -3,11 +3,11 @@
             [csvql.core :as csvql]
             [csvql.join :as join]))
 
-(def users (-> (csvql/read-csv "test/fixtures/user_data.csv")
+(def users (-> (csvql/read-csv "dev-resources/user_data.csv")
                (csvql/transform-headers keyword)
                csvql/zip-rows))
 
-(def orders (-> (csvql/read-csv "test/fixtures/order_data.csv")
+(def orders (-> (csvql/read-csv "dev-resources/order_data.csv")
                 (csvql/transform-headers keyword)
                 csvql/zip-rows))
 

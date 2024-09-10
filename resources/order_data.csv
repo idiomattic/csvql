@@ -1,6 +1,0 @@
-order_id,user_id,total_amount,is_shipped,order_date
-ORD-001,550e8400-e29b-41d4-a716-446655440000,150.75,true,2024-03-15
-ORD-002,f47ac10b-58cc-4372-a567-0e02b2c3d479,89.99,false,2024-03-16
-ORD-003,1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p,200.50,true,2024-03-17
-ORD-004,9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d,75.25,true,2024-03-18
-ORD-005,2c3d4e5f-6g7h-8i9j-0k1l-2m3n4o5p6q7r,120.00,false,2024-03-19

@@ -17,7 +17,7 @@
            (csvql/read-csv "user_data.csv"))))
   (testing "Can read a CSV file given a file path."
     (is (= users
-           (csvql/read-csv "test/fixtures/user_data.csv")))))
+           (csvql/read-csv "dev-resources/user_data.csv")))))
 
 (deftest transform-headers-test
   (testing "Can transform headers by applying a function."
@@ -73,7 +73,7 @@
       (is (every? int? (map :age result))))))
 
 (deftest create-lookup-test
-  (let [user-data (-> (csvql/read-csv "test/fixtures/user_data.csv")
+  (let [user-data (-> (csvql/read-csv "dev-resources/user_data.csv")
                       (csvql/transform-headers keyword)
                       (csvql/zip-rows {:age parse-long
                                        :is_active parse-boolean
@@ -82,13 +82,13 @@
         {"Alice Smith" 28, "Bob Johnson" 35, "Charlie Brown" 42, "Diana Lee" 31, "Ethan Davis" 39}))))
 
 (deftest read-zip-parse-test
-  (let [expected (-> (csvql/read-csv "test/fixtures/user_data.csv")
+  (let [expected (-> (csvql/read-csv "dev-resources/user_data.csv")
                      (csvql/transform-headers keyword)
                      (csvql/zip-rows {:age parse-long
                                       :is_active parse-boolean
                                       :total_amount parse-double}))]
     (is (= expected
-           (csvql/read-zip-parse "test/fixtures/user_data.csv"
+           (csvql/read-zip-parse "dev-resources/user_data.csv"
                                  {:key-fn keyword
                                   :parsers {:age parse-long
                                             :is_active parse-boolean

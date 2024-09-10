@@ -25,7 +25,7 @@ Add the following dependency to your project.clj:
 ```clojure
 (require '[csvql.core :as csvql])
 
-(def orders-data (csvql/read-csv "test/fixtures/order_data.csv"))
+(def orders-data (csvql/read-csv "dev-resources/order_data.csv"))
 
 (def orders-data-w-kw-headers (csvql/transform-headers data keyword))
 
@@ -35,7 +35,7 @@ Add the following dependency to your project.clj:
                              :is_shipped parse-boolean}))
 
 ;; Equivalent to
-(def orders (csvql/read-zip-parse "test/fixtures/order_data.csv"
+(def orders (csvql/read-zip-parse "dev-resources/order_data.csv"
                                   {:key-fn keyword
                                    :parsers {:total_amount parse-double
                                              :is_shipped parse-boolean}}))
@@ -85,14 +85,14 @@ Add the following dependency to your project.clj:
 
 (def users
   (csvql/read-zip-parse
-   "test/fixtures/user_data.csv"
+   "dev-resources/user_data.csv"
    {:key-fn keyword
     :parsers {:age parse-long
               :is_active parse-boolean}}))
 
 (def orders
   (csvql/read-zip-parse
-   "test/fixtures/order_data.csv"
+   "dev-resources/order_data.csv"
    {:key-fn keyword
     :parsers {:is_shipped parse-boolean
               :total_amount parse-double}}))
